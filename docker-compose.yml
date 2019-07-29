@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: spring-boot-postgres
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_DB: docker
+    ports:
+      - "5432:5432"
+
+  springboot:
+    image: wonwoo/spring-boot-docker-postgresql
+    container_name: spring-boot-docker-postgresql
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+version: '3.1'
+services:
+  tomcatservice:
+    image: tomcat
+    container_name: tomcattest
+    ports:
+    - "8080:8080"
+
+version: '3.1'
+services:
+  javaservice:
+    image: hasan
+    container_name: hasan
+    ports:
+    - "9090:9090"
