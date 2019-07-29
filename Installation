@@ -1,0 +1,173 @@
+Docker installation on Rhel
+ 
+yum install -y yum-util/device mapper-persistance-data \lvm2
+yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager --enable rhui-REGION-rhel-server-extras
+yum install docker-ce -y
+  
+----------------------------------------------------------------------------------------------
+Docker install particular version
+  
+yum install -y yum-util/device mapper-persistance-data \lvm2
+
+yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+
+This command shows the docker versions and select the which version you want
+
+sudo yum list docker-ce.x86_64 --showduplicates | sort -r
+
+yum install docker-ce-18.06.0.ce-3.el7 -y
+
+service docker start
+------------------------------------------------------------------------------------------------
+ON RHEL8
+dnf install -y dnf-utils \  device-mapper-persistent-data \ lvm2
+yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+yum install docker-ce-18.06.0.ce-3.el7 -y
+systemctl start docker
+systemctl enable docker
+
+------------------------------------------------------------------------------------------------
+Docker install on ubuntu
+
+apt-get update
+apt install docker.io
+
+------------------------------------------------------------------------------------------------
+
+			Docker compose installation
+yum update -y
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install python-pip
+pip install docker-compose
+vi docker-compose.yaml
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+
+		 (To compose depends on local images to containers)
+version: '3.1'
+services:
+  myservice:
+    image: mangamur
+    container_name: mymang
+    ports:
+    - "8080:8080"
+  mysqlservice:
+    image: mysql
+    container_name: mysqlcont
+    ports:
+    - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "test"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+	             (To Compose depends on website images to containers)
+version: '3.1'
+services:
+  myservice:
+    build: /opt/awsprojectdemo/mavewebappdemo/target/.
+    image: mangamur
+    container_name: mymang
+    ports:
+    - "8080:8080"
+  mysqlservice:
+    image: mysql
+    container_name: mysqlcont
+    ports:
+    - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "test"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+	          (connecton between one service to another service by useing depends_on)  
+version: '3.1'
+services:
+  myservice:
+    image: mangamur
+    container_name: mymang
+    ports:
+    - "8080:8080"
+  mysqlservice:
+    image: mysql
+    container_name: mysqlcont
+    ports:
+    - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "test"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      depends_on:
+      - myservice	  
+ 6  docker-compose up
+
+
+                                        (DOCKER INSTALLATIONS)
+
+vi Dockerfile
+    FROM tomcat
+    ADD ./*.war /usr/local/tomcat/webapps
+    EXPOSE 8080
+	                   (or) jar file generation
+    FROM java:8
+    VOLUME /tmp
+    ADD springbootdockerexample-0.0.1-SNAPSHOT.jar app.jar
+    RUN bash -c 'touch /app.jar'
+    ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+    
+docker build -t dockerimagename .(or)file full path
+docker run -it --name containername -p 8080:8080 -d dockerimagename
+   
+                                        
+             
+ 
+                                                (DOCKER SWARM SERVICES)
+												
+create 3 servers 1master and 2 nodes
+start all 3 servers
+In docker master
+1 docker swarm init -----> to generate the link
+2 docker swarm info ----> to check swarm active or not
+3 allow port numbers on master 2377,7946,4789
+4 docker node ls
+5 docker node promote nodeid(hostname)-------> to set the node as a manager
+6 docker node demote nodeid(hostname)
+7 docker node rm nodeid
+in docker containers called as servers
+8 docker service create -p 8066:8080 --name myjenkins jenkins          8066(hostport) 8080(containerport) myjenkins(our created name) jenkins(orginal name)
+9 docker service ps servicename(our creatd name)
+10 docker service scale servicename=5                                  servicename(our created name) 5(if any)
+11 docker service rm servicename                                       servicename(our created name)----> to delete the service
+
+In Nodeside
+service docker restart
+copy the link and execuate the link
+result:The node is swarm worker
+1 docker ps -a
+
+Docker swarm running on through overly network
+Docker version 1.13(famous version)
+Latest version 18.09.6
+
+
+
+												
+ 
+										
+										 
+https://www.youtube.com/watch?v=fmFlAWtKnGA		
+
+https://www.youtube.com/watch?v=915ePPMwVCk
+
+https://medium.com/@marcus.cavalcanti/deploying-microservices-with-aws-fargate-f0578d8199a3
+
+https://dzone.com/articles/deploying-spring-boot-to-ecs-part-2
