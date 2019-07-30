@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+  postgresdb:
+    image: postgres
+    container_name: "mypostgresdb"
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+        - 5432:5432
+
+  mongodb:
+    image:  mongo:latest
+    container_name: "mymongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+          - ./data/db:/data/db
+    ports:
+        - 27017:27017
+      
+version:'2.3'
+services:
+  couchdb:
+    image: couchdb
+    container_name: couchdbcontainer
+      volumes:
+        - couchdb-data-volume:/usr/local/var/lib/couchdb
+    ports:
+      - "5984:5984"
