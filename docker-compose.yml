@@ -29,7 +29,7 @@ services:
 version: '3.1'
 services:
   javaservice:
-    image: hasan
-    container_name: hasan
+    image: kiranimage
+    container_name: kirancontainer
     ports:
     - "9090:9090"
